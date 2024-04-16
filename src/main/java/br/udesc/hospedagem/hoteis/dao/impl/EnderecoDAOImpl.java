@@ -27,6 +27,16 @@ public class EnderecoDAOImpl implements EnderecoDAO {
 		.setParameter("enderecoId", endereco.getEnderecoId()).executeUpdate();
 	}
 
+	public Endereco buscarEnderecoPorId(Integer enderecoId) {
+		String query = "SELECT * FROM endereco WHERE endereco_id = :enderecoId";
+		List<Endereco> listaRetorno = this.entityManager.createNativeQuery(query, Endereco.class)
+				.setParameter("enderecoId", enderecoId).getResultList();
+		if (listaRetorno.size() == 0) {
+			return null;
+		}
+		return listaRetorno.get(0);
+	}
+
 	@Override
 	public Integer buscarIdEnderecoPorAributos(Endereco endereco) {
 		String query = "SELECT endereco_id FROM endereco WHERE rua = :rua AND numero = :numero AND bairro = :bairro AND cidade = :cidade AND estado = :estado AND pais = :pais AND cep = :cep order by endereco_id desc limit 1";
@@ -51,9 +61,9 @@ public class EnderecoDAOImpl implements EnderecoDAO {
 				+ "VALUES (:rua, :numero, :bairro, :cidade, :estado, :pais, :cep)";
 
 		this.entityManager.createNativeQuery(query).setParameter("rua", endereco.getRua())
-				.setParameter("numero", endereco.getNumero()).setParameter("bairro", endereco.getBairro())
-				.setParameter("cidade", endereco.getCidade()).setParameter("estado", endereco.getEstado())
-				.setParameter("pais", endereco.getPais()).setParameter("cep", endereco.getCep()).executeUpdate();
+		.setParameter("numero", endereco.getNumero()).setParameter("bairro", endereco.getBairro())
+		.setParameter("cidade", endereco.getCidade()).setParameter("estado", endereco.getEstado())
+		.setParameter("pais", endereco.getPais()).setParameter("cep", endereco.getCep()).executeUpdate();
 	}
 
 	@Override

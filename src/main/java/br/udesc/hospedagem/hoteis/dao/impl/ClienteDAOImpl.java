@@ -27,6 +27,17 @@ public class ClienteDAOImpl implements ClienteDAO {
 	}
 
 	@Override
+	public Cliente buscaClientePorId(Integer clienteId) {
+		String query = "SELECT * FROM cliente WHERE cliente_id = :clienteId";
+		List<Cliente> listaRetorno = this.entityManager.createNativeQuery(query, Cliente.class)
+				.setParameter("clienteId", clienteId).getResultList();
+		if (listaRetorno.size() == 0) {
+			return null;
+		}
+		return listaRetorno.get(0);
+	}
+
+	@Override
 	@Transactional
 	public void cadastrarCliente(Cliente cliente) {
 		String query = "INSERT INTO cliente (nome, cpf, email, telefone, endereco_id) "

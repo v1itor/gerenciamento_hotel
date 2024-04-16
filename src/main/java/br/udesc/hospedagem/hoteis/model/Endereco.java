@@ -39,6 +39,10 @@ public class Endereco {
 	@Column(name = "cep")
 	private String cep;
 
+	public Endereco() {
+		super();
+	}
+
 	public Endereco(String rua, Integer numero, String bairro, String cidade, String estado, String pais, String cep) {
 		super();
 		this.rua = rua;
@@ -113,18 +117,18 @@ public class Endereco {
 	public void setRua(String rua) {
 		this.rua = rua;
 	}
-	
+
 	@Override
 	public String toString() {
-	    return "Endereço:\n" +
-	            "  Rua: " + rua + "\n" +
-	            "  Número: " + numero + "\n" +
-	            "  Bairro: " + bairro + "\n" +
-	            "  Cidade: " + cidade + "\n" +
-	            "  Estado: " + estado + "\n" +
-	            "  País: " + pais + "\n" +
-	            "  CEP: " + cep + "\n" +
-	            "  ID: " + enderecoId;
+		return "Endereço:\n" +
+				"  Rua: " + this.rua + "\n" +
+				"  Número: " + this.numero + "\n" +
+				"  Bairro: " + this.bairro + "\n" +
+				"  Cidade: " + this.cidade + "\n" +
+				"  Estado: " + this.estado + "\n" +
+				"  País: " + this.pais + "\n" +
+				"  CEP: " + this.cep + "\n" +
+				"  ID: " + this.enderecoId;
 	}
 
 }

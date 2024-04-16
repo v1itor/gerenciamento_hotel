@@ -12,4 +12,6 @@ public interface ReservaDetalheDAO {
 
 	List<ReservaDetalhe> listarReservaDetalhe();
 
+	List<ReservaDetalhe> listarReservaDetalhePorReservaId(Integer reservaId);
+
 }

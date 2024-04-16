@@ -14,16 +14,16 @@ public class ReservaDetalhe {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "reserva_detalhe_id")
-	private int reservaDetalheId;
+	private Integer reservaDetalheId;
 
 	@Column(name = "reserva_id")
-	private int reservaId;
+	private Integer reservaId;
 
 	@Column(name = "quarto_id")
-	private int quartoId;
+	private Integer quartoId;
 
 	@Column(name = "cliente_id")
-	private int clienteId;
+	private Integer clienteId;
 
 	public int getClienteId() {
 		return this.clienteId;
@@ -33,28 +33,36 @@ public class ReservaDetalhe {
 		return this.quartoId;
 	}
 
+	public Integer getReservaDetalheId() {
+		return this.reservaDetalheId;
+	}
+
 	public int getReservaId() {
 		return this.reservaId;
 	}
 
-	public void setClienteId(int clienteId) {
+	public void setClienteId(Integer clienteId) {
 		this.clienteId = clienteId;
 	}
 
-	public void setQuartoId(int quartoId) {
+	public void setQuartoId(Integer quartoId) {
 		this.quartoId = quartoId;
 	}
 
-	public void setReservaId(int reservaId) {
+	public void setReservaDetalheId(Integer reservaDetalheId) {
+		this.reservaDetalheId = reservaDetalheId;
+	}
+
+	public void setReservaId(Integer reservaId) {
 		this.reservaId = reservaId;
 	}
-	
+
 	@Override
 	public String toString() {
-	    return "Reserva Detalhe:\n" +
-	            "  Reserva ID: " + reservaId + "\n" +
-	            "  Quarto ID: " + quartoId + "\n" +
-	            "  Cliente ID: " + clienteId + "\n" +
-	    		"  ID do vínculo da reserva: " + reservaDetalheId + "\n";
+		return "Reserva Detalhe:\n" +
+				"  Reserva ID: " + this.reservaId + "\n" +
+				"  Quarto ID: " + this.quartoId + "\n" +
+				"  Cliente ID: " + this.clienteId + "\n" +
+				"  ID do vínculo da reserva: " + this.reservaDetalheId + "\n";
 	}
 }

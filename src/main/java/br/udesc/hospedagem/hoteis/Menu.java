@@ -141,7 +141,6 @@ public class Menu {
 		} else {
 			this.enderecoDAOImpl.cadastrarEndereco(endereco);
 		}
-		this.enderecoDAOImpl.cadastrarEndereco(endereco);
 
 		return endereco;
 	}
@@ -166,7 +165,9 @@ public class Menu {
 
 		Hotel hotel = this.pedeDadosHotel();
 
-		this.cadastraEndereco(null);
+		Endereco endereco = this.cadastraEndereco(null);
+
+		hotel.setEnderecoId(this.enderecoDAOImpl.buscarIdEnderecoPorAributos(endereco));
 
 		this.hotelDAOImpl.cadastrarHotel(hotel);
 
@@ -256,6 +257,11 @@ public class Menu {
 		Hotel hotelSelecionado = listaDeHoteis.stream().filter(hotel -> hotel.getHotelId().equals(hotelId)).findFirst()
 				.orElse(null);
 
+		if (hotelSelecionado == null) {
+			System.out.println("Hotel não encontrado. Por favor, insira um ID válido.");
+			return;
+		}
+
 		this.hotelDAOImpl.deletarHotel(hotelId);
 		this.enderecoDAOImpl.deletarEndereco(hotelSelecionado.getEnderecoId());
 		System.out.println("Hotel deletado com sucesso!");
@@ -277,6 +283,11 @@ public class Menu {
 
 		System.out.println("Digite o ID do quarto escolhido: ");
 		Integer quartoId = this.insereNumero();
+
+		if (listaDeQuartos.stream().noneMatch(quarto -> quarto.getQuartoId().equals(quartoId))) {
+			System.out.println("Quarto não encontrado. Por favor, insira um ID válido.");
+			return;
+		}
 
 		this.quartoDAOImpl.deletarQuarto(quartoId);
 		System.out.println("Quarto deletado com sucesso!");
@@ -300,6 +311,11 @@ public class Menu {
 		System.out.println("Digite o ID da reserva escolhida: ");
 		Integer reservaId = this.insereNumero();
 
+		if (listaDeReservas.stream().noneMatch(reserva -> reserva.getReservaId().equals(reservaId))) {
+			System.out.println("Reserva não encontrada. Por favor, insira um ID válido.");
+			return;
+		}
+
 		this.reservaDAOImpl.deletarReserva(reservaId);
 		System.out.println("Reserva deletada com sucesso!");
 	}
@@ -322,6 +338,12 @@ public class Menu {
 
 		System.out.println("Digite o ID do vinculo de reserva escolhida: ");
 		Integer reservaDetalheId = this.insereNumero();
+
+		if (listaDeReservasDetalhes.stream()
+				.noneMatch(reservaDetalhe -> reservaDetalhe.getReservaDetalheId().equals(reservaDetalheId))) {
+			System.out.println("Vínculo de reserva não encontrado. Por favor, insira um ID válido.");
+			return;
+		}
 
 		this.reservaDetalheDAOImpl.deletarReservaDetalhe(reservaDetalheId);
 		System.out.println("Vínculo da reserva deletada com sucesso!");
@@ -456,6 +478,29 @@ public class Menu {
 			System.out.println(cliente);
 			System.out.println("\n----------------------\n");
 		});
+		Integer opcao = -1;
+		while (opcao != 0) {
+			System.out.println("Insira o ID de um cliente para detalhar o endereço ou 0 para voltar ao menu: ");
+			final Integer opcaoUsuario = this.insereNumero();
+
+			if (opcaoUsuario == 0) {
+				break;
+			}
+
+			Cliente clienteEscolhido = listaDeClientes.stream()
+					.filter(cliente -> cliente.getClienteId().equals(opcaoUsuario)).findFirst().orElse(null);
+
+			Endereco endereco = this.enderecoDAOImpl.buscarEnderecoPorId(clienteEscolhido.getEnderecoId());
+
+			if (endereco == null) {
+				System.out.println("Endereço não encontrado.");
+				continue;
+			}
+
+			System.out.println("Endereço do cliente com id " + opcaoUsuario + ": ");
+			System.out.println(endereco);
+			opcao = opcaoUsuario;
+		}
 	}
 
 	public void listarHoteis() {
@@ -468,6 +513,31 @@ public class Menu {
 			System.out.println(hotel);
 			System.out.println("\n----------------------\n");
 		});
+
+		Integer opcao = -1;
+		while (opcao != 0) {
+			System.out.println("Insira o ID de um hotel para detalhar o endereço ou 0 para voltar ao menu: ");
+			final Integer opcaoUsuario = this.insereNumero();
+
+			if (opcaoUsuario == 0) {
+				break;
+			}
+
+			Hotel HotelEscolhido = listaDeHoteis.stream().filter(hotel -> hotel.getHotelId().equals(opcaoUsuario))
+					.findFirst().orElse(null);
+
+			Endereco endereco = this.enderecoDAOImpl.buscarEnderecoPorId(HotelEscolhido.getEnderecoId());
+
+			if (endereco == null) {
+				System.out.println("Endereço não encontrado.");
+				continue;
+			}
+
+			System.out.println("Endereço do hotel com id " + opcaoUsuario + ": ");
+			System.out.println(endereco);
+			opcao = opcaoUsuario;
+		}
+
 	}
 
 	public void listarQuartos() {
@@ -480,6 +550,8 @@ public class Menu {
 			System.out.println(quarto);
 			System.out.println("\n----------------------\n");
 		});
+
+		this.pedeConfirmacaoVoltarMenu();
 	}
 
 	public void listarReservas() {
@@ -492,6 +564,59 @@ public class Menu {
 			System.out.println(reserva);
 			System.out.println("\n----------------------\n");
 		});
+
+		Integer opcao = -1;
+		while (opcao != 0) {
+			System.out.println("Insira o ID de uma reserva para detalhar ou 0 para voltar ao menu: ");
+			final Integer opcaoUsuario = this.insereNumero();
+
+			if (opcaoUsuario == 0) {
+				break;
+			}
+
+			Reserva reservaEscolhida = listaDeReservas.stream()
+					.filter(reserva -> reserva.getReservaId().equals(opcaoUsuario))
+					.findFirst().orElse(null);
+
+			if (reservaEscolhida == null) {
+				System.out.println("Reserva não encontrada.");
+				continue;
+			}
+
+			List<ReservaDetalhe> reservaDetalhe = this.reservaDetalheDAOImpl
+					.listarReservaDetalhePorReservaId(opcaoUsuario);
+
+			if (reservaDetalhe.isEmpty()) {
+				System.out.println("Nenhum vínculo de reserva encontrado.");
+				continue;
+			}
+
+			System.out.println("Vinculos da reserva com o id " + opcaoUsuario + ": ");
+
+			System.out.println("\n----------------------\n");
+			reservaDetalhe.forEach(rd -> {
+				Cliente cliente = this.clienteDAOImpl.buscaClientePorId(rd.getClienteId());
+
+				if (cliente == null) {
+					System.out.println("Cliente não encontrado.");
+				} else {
+					System.out.println("Cliente: " + cliente);
+					System.out.println("\n----------------------\n");
+				}
+
+				Quarto quarto = this.quartoDAOImpl.buscaQuartoPorId(rd.getQuartoId());
+
+				if (quarto == null) {
+					System.out.println("Quarto não encontrado.");
+				} else {
+					System.out.println("Quarto: " + quarto);
+					System.out.println("\n----------------------\n");
+				}
+
+				System.out.println("\n----------------------\n");
+			});
+			opcao = opcaoUsuario;
+		}
 	}
 
 	private ReservaDetalhe pedeClienteEQuartoDaReservaDetalhe(Reserva reserva) {
@@ -547,6 +672,11 @@ public class Menu {
 		reservaDetalhe.setClienteId(clienteId);
 		reservaDetalhe.setQuartoId(quartoId);
 		return reservaDetalhe;
+	}
+
+	public void pedeConfirmacaoVoltarMenu() {
+		System.out.println("Pressione ENTER para voltar ao menu.");
+		this.scanner.nextLine();
 	}
 
 	private Cliente pedeDadosCliente() {

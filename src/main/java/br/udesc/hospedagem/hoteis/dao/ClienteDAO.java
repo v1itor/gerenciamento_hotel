@@ -8,6 +8,8 @@ public interface ClienteDAO {
 
 	void atualizarCliente(Cliente cliente);
 
+	Cliente buscaClientePorId(Integer clienteId);
+
 	public void cadastrarCliente(Cliente cliente);
 
 	void deletarCliente(Integer clienteId);

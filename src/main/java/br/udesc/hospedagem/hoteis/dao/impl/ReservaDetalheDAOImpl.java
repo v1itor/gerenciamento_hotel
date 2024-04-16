@@ -40,4 +40,10 @@ public class ReservaDetalheDAOImpl implements ReservaDetalheDAO {
 		String query = "SELECT * FROM reserva_detalhe";
 		return this.entityManager.createNativeQuery(query, ReservaDetalhe.class).getResultList();
 	}
+
+	@Override
+	public List<ReservaDetalhe> listarReservaDetalhePorReservaId(Integer reservaId) {
+		String query = "SELECT * FROM reserva_detalhe WHERE reserva_id = :reservaId";
+		return this.entityManager.createNativeQuery(query, ReservaDetalhe.class).setParameter("reservaId", reservaId).getResultList();
+	}
 }

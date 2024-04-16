@@ -9,6 +9,8 @@ public interface QuartoDAO {
 
 	void atualizarQuarto(Quarto quarto);
 
+	Quarto buscaQuartoPorId(Integer quartoId);
+
 	public List<Quarto> buscarQuartoDisponivelPorHotelId(Integer hotelId, Date dataEntrada, Date dataSaida);
 
 	public void cadastrarQuarto(Quarto quarto);
