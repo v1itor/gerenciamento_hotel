@@ -42,11 +42,7 @@ public class Menu {
 		this.scanner = new Scanner(System.in);
 	}
 
-	public void alteraHotel() {
-
-	}
-
-	public void atualizarCliente() {
+	private void atualizarCliente() {
 		System.out.println("===== Atualizar Cliente =====");
 
 		System.out.println("Clientes disponíveis: ");
@@ -68,7 +64,7 @@ public class Menu {
 		System.out.println("Cliente atualizado com sucesso!");
 	}
 
-	public void atualizarHotel() {
+	private void atualizarHotel() {
 		System.out.println("===== Atualizar Hotel =====");
 
 		System.out.println("Hoteis disponíveis: ");
@@ -92,7 +88,7 @@ public class Menu {
 		System.out.println("Hotel atualizado com sucesso!");
 	}
 
-	public void atualizarQuarto() {
+	private void atualizarQuarto() {
 		System.out.println("===== Atualizar Quarto =====");
 
 		System.out.println("Quartos disponíveis: ");
@@ -112,7 +108,7 @@ public class Menu {
 		System.out.println("Quarto atualizado com sucesso!");
 	}
 
-	public void atualizarReserva() {
+	private void atualizarReserva() {
 		System.out.println("===== Atualizar Reserva =====");
 
 		System.out.println("Reservas disponíveis: ");
@@ -130,6 +126,35 @@ public class Menu {
 		this.reservaDAOImpl.atualizarReserva(reserva);
 
 		System.out.println("Reserva atualizada com sucesso!");
+	}
+
+	private void buscaInformacoesHospedagemCliente() {
+		System.out.println("Clientes disponíveis: ");
+		this.clienteDAOImpl.listarCliente().forEach(cliente -> {
+			System.out.println(cliente);
+			System.out.println("\n----------------------\n");
+		});
+		System.out.println("Para buscar infomrações de hospedagem do cliente, por favor, insira o id do cliente: ");
+		Integer clienteId = this.insereNumero();
+		this.clienteDAOImpl.buscarInformacoesHospedagemCliente(clienteId).forEach(hospedagem -> {
+			hospedagem.forEach((key, value) -> {
+				System.out.println(key + ": " + value);
+			});
+			System.out.println("\n----------------------\n");
+		});
+	}
+
+	private void buscaQuartosOcupadosNoPeriodo() {
+		System.out.println("Digite a data de início (dd/MM/yyyy): ");
+		Date dataInicio = this.lerData();
+		System.out.println("Digite a data de fim (dd/MM/yyyy): ");
+		Date dataFim = this.lerData();
+		this.quartoDAOImpl.buscaOcupacoesDeQuartos(dataInicio, dataFim).forEach(quarto -> {
+			quarto.forEach((key, value) -> {
+				System.out.println(key + ": " + value);
+			});
+			System.out.println("\n----------------------\n");
+		});
 	}
 
 	private Endereco cadastraEndereco(Integer enderecoId) {
@@ -213,7 +238,7 @@ public class Menu {
 		System.out.println("Reserva cadastrada com sucesso!");
 	}
 
-	public void deletarCliente() {
+	private void deletarCliente() {
 
 		List<Cliente> listaDeClientes = this.clienteDAOImpl.listarCliente();
 
@@ -234,7 +259,7 @@ public class Menu {
 		System.out.println("Cliente deletado com sucesso!");
 	}
 
-	public void deletarHotel() {
+	private void deletarHotel() {
 
 		List<Hotel> listaDeHoteis = this.hotelDAOImpl.listarHotel();
 
@@ -267,7 +292,8 @@ public class Menu {
 		System.out.println("Hotel deletado com sucesso!");
 	}
 
-	public void deletarQuarto() {
+
+	private void deletarQuarto() {
 
 		List<Quarto> listaDeQuartos = this.quartoDAOImpl.listarQuarto();
 
@@ -293,7 +319,7 @@ public class Menu {
 		System.out.println("Quarto deletado com sucesso!");
 	}
 
-	public void deletarReserva() {
+	private void deletarReserva() {
 
 		List<Reserva> listaDeReservas = this.reservaDAOImpl.listarReserva();
 
@@ -320,8 +346,7 @@ public class Menu {
 		System.out.println("Reserva deletada com sucesso!");
 	}
 
-
-	public void deletarReservaDetalhe() {
+	private void deletarReservaDetalhe() {
 		System.out.println("===== Deletar Reserva Detalhe =====");
 
 		List<ReservaDetalhe> listaDeReservasDetalhes = this.reservaDetalheDAOImpl.listarReservaDetalhe();
@@ -370,6 +395,9 @@ public class Menu {
 			System.out.println("16 - Atualizar Cliente");
 			System.out.println("17 - Atualizar Reserva");
 			System.out.println("18 - Deletar Vículo de Reserva");
+			System.out.println("19 - Buscar Informações de Hospedagem do Cliente");
+			System.out.println("20 - Buscar Clientes Hospedados em Hotel");
+			System.out.println("21 - Buscar Quartos Ocupados no Período");
 
 			System.out.println("0 - Sair");
 
@@ -397,6 +425,9 @@ public class Menu {
 			case 16 -> this.atualizarCliente();
 			case 17 -> this.atualizarReserva();
 			case 18 -> this.deletarReservaDetalhe();
+			case 19 -> this.buscaInformacoesHospedagemCliente();
+			case 20 -> this.listarClientesNoHotel();
+			case 21 -> this.buscaQuartosOcupadosNoPeriodo();
 
 			default -> System.out.println("Opção inválida. Por favor, tente novamente.");
 			}
@@ -468,7 +499,7 @@ public class Menu {
 		return data;
 	}
 
-	public void listarClientes() {
+	private void listarClientes() {
 		List<Cliente> listaDeClientes = this.clienteDAOImpl.listarCliente();
 		if (listaDeClientes.isEmpty()) {
 			System.out.println("Nenhum cliente cadastrado.");
@@ -503,7 +534,24 @@ public class Menu {
 		}
 	}
 
-	public void listarHoteis() {
+	private void listarClientesNoHotel() {
+		System.out.println("Hoteis disponíveis: ");
+		this.hotelDAOImpl.listarHotel().forEach(hotel -> {
+			System.out.println(hotel);
+			System.out.println("\n----------------------\n");
+		});
+
+		System.out.println("Digite o ID do hotel escolhido: ");
+		Integer hotelId = this.insereNumero();
+		this.hotelDAOImpl.buscarHospedesQueEstaoHospedadosEmHotel(hotelId).forEach(cliente -> {
+			cliente.forEach((key, value) -> {
+				System.out.println(key + ": " + value);
+			});
+			System.out.println("\n----------------------\n");
+		});
+	}
+
+	private void listarHoteis() {
 		List<Hotel> listaDeHoteis = this.hotelDAOImpl.listarHotel();
 		if (listaDeHoteis.isEmpty()) {
 			System.out.println("Nenhum hotel cadastrado.");
@@ -540,7 +588,7 @@ public class Menu {
 
 	}
 
-	public void listarQuartos() {
+	private void listarQuartos() {
 		List<Quarto> listaDeQuartos = this.quartoDAOImpl.listarQuarto();
 		if (listaDeQuartos.isEmpty()) {
 			System.out.println("Nenhum quarto cadastrado.");
@@ -554,7 +602,7 @@ public class Menu {
 		this.pedeConfirmacaoVoltarMenu();
 	}
 
-	public void listarReservas() {
+	private void listarReservas() {
 		List<Reserva> listaDeReservas = this.reservaDAOImpl.listarReserva();
 		if (listaDeReservas.isEmpty()) {
 			System.out.println("Nenhuma reserva cadastrada.");
@@ -674,7 +722,7 @@ public class Menu {
 		return reservaDetalhe;
 	}
 
-	public void pedeConfirmacaoVoltarMenu() {
+	private void pedeConfirmacaoVoltarMenu() {
 		System.out.println("Pressione ENTER para voltar ao menu.");
 		this.scanner.nextLine();
 	}

@@ -1,7 +1,11 @@
 package br.udesc.hospedagem.hoteis.dao.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -39,6 +43,44 @@ public class QuartoDAOImpl implements QuartoDAO {
 		query.setParameter("preco", quarto.getPreco());
 		query.setParameter("quartoId", quarto.getQuartoId());
 		query.executeUpdate();
+	}
+
+	public List<Map<String, String>> buscaOcupacoesDeQuartos(Date dataInicial, Date dataFinal) {
+		String query = """
+				SELECT
+				hotel.nome AS nome_hotel,
+				quarto.numero AS numero_quarto,
+				reserva.data_inicio,
+				reserva.data_fim,
+				cliente.nome AS nome_cliente
+				FROM
+				reserva
+				JOIN
+				reserva_detalhe ON reserva.reserva_id = reserva_detalhe.reserva_id
+				JOIN
+				quarto ON reserva_detalhe.quarto_id = quarto.quarto_id
+				JOIN
+				hotel ON quarto.hotel_id = hotel.hotel_id
+				JOIN
+				cliente ON reserva_detalhe.cliente_id = cliente.cliente_id
+				WHERE
+				reserva.data_inicio >= :dataInicial AND reserva.data_fim <= :dataFinal;""";
+		List<Object[]> retornoRelatorio = this.entityManager.createNativeQuery(query).setParameter("dataInicial", dataInicial).setParameter("dataFinal", dataFinal).getResultList();
+
+		List<Map<String, String>> resultadoRelatorio = new ArrayList<>();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+		retornoRelatorio.forEach(obj -> {
+			Map<String, String> map = new HashMap<>();
+			map.put("Nome do hotel", obj[0].toString());
+			map.put("Numero do quarto", obj[1].toString());
+			map.put("Data de inicio", sdf.format(obj[2]));
+			map.put("Data de fim", sdf.format(obj[3]));
+			map.put("Nome do cliente", obj[4].toString());
+			resultadoRelatorio.add(map);
+		});
+
+		return resultadoRelatorio;
 	}
 
 	@Override

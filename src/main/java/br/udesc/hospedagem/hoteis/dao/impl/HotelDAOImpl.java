@@ -1,6 +1,9 @@
 package br.udesc.hospedagem.hoteis.dao.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -26,6 +29,47 @@ public class HotelDAOImpl implements HotelDAO {
 		.setParameter("dataConstrucao", hotel.getDataConstrucao())
 		.setParameter("hotelId", hotel.getHotelId())
 		.executeUpdate();
+	}
+
+	@Override
+	public List<Map<String, String>> buscarHospedesQueEstaoHospedadosEmHotel(Integer hotelId) {
+		String query = """
+				SELECT
+				cliente.nome AS nome_cliente,
+				cliente.email,
+				cliente.telefone,
+				quarto.numero
+				FROM
+				cliente
+				JOIN
+				reserva_detalhe ON cliente.cliente_id = reserva_detalhe.cliente_id
+				JOIN
+				reserva ON reserva_detalhe.reserva_id = reserva.reserva_id
+				JOIN
+				quarto ON reserva_detalhe.quarto_id = quarto.quarto_id
+				JOIN
+				hotel ON quarto.hotel_id = hotel.hotel_id
+				WHERE
+				quarto.hotel_id = :hotelId AND
+				((sysdate between data_inicio and data_fim) or
+				(sysdate between data_inicio and data_fim))""";
+		List<Object[]> retornoRelatorio = this.entityManager.createNativeQuery(query).setParameter("hotelId", hotelId)
+				.getResultList();
+
+		List<Map<String, String>> retorno = new ArrayList<>();
+
+		retornoRelatorio.forEach(obj -> {
+			Map<String, String> map = new HashMap<>();
+			map.put("Nome do cliente", (String) obj[0]);
+			map.put("Email do cliente", (String) obj[1]);
+			map.put("Telefone do cliente", (String) obj[2]);
+			map.put("Número do quarto", (String) obj[3]);
+
+			retorno.add(map);
+		});
+
+		return retorno;
+
 	}
 
 	@Override
