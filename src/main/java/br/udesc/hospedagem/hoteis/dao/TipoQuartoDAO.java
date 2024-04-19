@@ -1,9 +1,16 @@
 package br.udesc.hospedagem.hoteis.dao;
 
+import java.util.List;
+
 import br.udesc.hospedagem.hoteis.model.TipoQuarto;
 
 public interface TipoQuartoDAO {
 
-	public void cadastrarTipoQuarto(TipoQuarto tipoQuarto);
+	void atualizarTipoQuarto(TipoQuarto tipoQuarto);
 
+	List<TipoQuarto> buscarTipoQuarto();
+
+	void deletarTipoQuarto(int tipoQuartoId);
+
+	void inserirTipoQuarto(TipoQuarto tipoQuarto);
 }

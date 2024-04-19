@@ -24,6 +24,7 @@ import br.udesc.hospedagem.hoteis.model.Hotel;
 import br.udesc.hospedagem.hoteis.model.Quarto;
 import br.udesc.hospedagem.hoteis.model.Reserva;
 import br.udesc.hospedagem.hoteis.model.ReservaDetalhe;
+import br.udesc.hospedagem.hoteis.model.TipoQuarto;
 
 @Component
 public class Menu {
@@ -126,6 +127,26 @@ public class Menu {
 		this.reservaDAOImpl.atualizarReserva(reserva);
 
 		System.out.println("Reserva atualizada com sucesso!");
+	}
+
+	private void atualizarTipoQuarto() {
+		System.out.println("===== Atualizar Tipo de Quarto =====");
+
+		System.out.println("Tipos de quarto disponíveis: ");
+		this.tipoQuartoDAOImpl.buscarTipoQuarto().forEach(tipoQuarto -> {
+			System.out.println(tipoQuarto);
+			System.out.println("\n----------------------\n");
+		});
+
+		System.out.println("Digite o ID do tipo de quarto escolhido: ");
+		Integer tipoQuartoId = this.insereNumero();
+
+		TipoQuarto tipoQuarto = this.pedeDadosTipoQuarto();
+
+		tipoQuarto.setTipoQuartoId(tipoQuartoId);
+		this.tipoQuartoDAOImpl.atualizarTipoQuarto(tipoQuarto);
+
+		System.out.println("Tipo de quarto atualizado com sucesso!");
 	}
 
 	private void buscaInformacoesHospedagemCliente() {
@@ -292,7 +313,6 @@ public class Menu {
 		System.out.println("Hotel deletado com sucesso!");
 	}
 
-
 	private void deletarQuarto() {
 
 		List<Quarto> listaDeQuartos = this.quartoDAOImpl.listarQuarto();
@@ -318,6 +338,7 @@ public class Menu {
 		this.quartoDAOImpl.deletarQuarto(quartoId);
 		System.out.println("Quarto deletado com sucesso!");
 	}
+
 
 	private void deletarReserva() {
 
@@ -374,31 +395,29 @@ public class Menu {
 		System.out.println("Vínculo da reserva deletada com sucesso!");
 	}
 
+	private void deletaTipoQuarto() {
+		System.out.println("Tipos de quarto disponíveis: ");
+		this.tipoQuartoDAOImpl.buscarTipoQuarto().forEach(tipoQuarto -> {
+			System.out.println(tipoQuarto);
+			System.out.println("\n----------------------\n");
+		});
+
+		System.out.println("Digite o ID do tipo de quarto escolhido: ");
+		Integer tipoQuartoId = this.insereNumero();
+
+		this.tipoQuartoDAOImpl.deletarTipoQuarto(tipoQuartoId);
+		System.out.println("Tipo de quarto deletado com sucesso!");
+	}
+
 	public void exibeMenu() {
 		boolean sair = false;
 		while (!sair) {
-			System.out.println("1 - Cadastrar Hotel");
-			System.out.println("2 - Cadastrar Quarto");
-			System.out.println("3 - Cadastrar Cliente");
-			System.out.println("4 - Cadastrar Reserva");
-			System.out.println("5 - Listar Hoteis");
-			System.out.println("6 - Listar Quartos");
-			System.out.println("7 - Listar Clientes");
-			System.out.println("8 - Listar Reservas");
-			System.out.println("9 - Deletar Hotel");
-			System.out.println("10 - Deletar Quarto");
-			System.out.println("11 - Deletar Cliente");
-			System.out.println("12 - Deletar Reserva");
-			System.out.println("13 - Vincular Reserva");
-			System.out.println("14 - Atualizar Hotel");
-			System.out.println("15 - Atualizar Quarto");
-			System.out.println("16 - Atualizar Cliente");
-			System.out.println("17 - Atualizar Reserva");
-			System.out.println("18 - Deletar Vículo de Reserva");
-			System.out.println("19 - Buscar Informações de Hospedagem do Cliente");
-			System.out.println("20 - Buscar Clientes Hospedados em Hotel");
-			System.out.println("21 - Buscar Quartos Ocupados no Período");
-
+			System.out.println("Menu Principal:");
+			System.out.println("1 - Cadastros");
+			System.out.println("2 - Listagens");
+			System.out.println("3 - Atualizações");
+			System.out.println("4 - Deletar");
+			System.out.println("5 - Outras Operações");
 			System.out.println("0 - Sair");
 
 			System.out.println("Digite a opção desejada: ");
@@ -407,28 +426,96 @@ public class Menu {
 
 			switch (opcao) {
 			case 0 -> sair = true;
-			case 1 -> this.cadastrarHotel();
-			case 2 -> this.cadastrarQuarto();
-			case 3 -> this.cadastrarCliente();
-			case 4 -> this.cadastrarReserva();
-			case 5 -> this.listarHoteis();
-			case 6 -> this.listarQuartos();
-			case 7 -> this.listarClientes();
-			case 8 -> this.listarReservas();
-			case 9 -> this.deletarHotel();
-			case 10 -> this.deletarQuarto();
-			case 11 -> this.deletarCliente();
-			case 12 -> this.deletarReserva();
-			case 13 -> this.vinculaReserva();
-			case 14 -> this.atualizarHotel();
-			case 15 -> this.atualizarQuarto();
-			case 16 -> this.atualizarCliente();
-			case 17 -> this.atualizarReserva();
-			case 18 -> this.deletarReservaDetalhe();
-			case 19 -> this.buscaInformacoesHospedagemCliente();
-			case 20 -> this.listarClientesNoHotel();
-			case 21 -> this.buscaQuartosOcupadosNoPeriodo();
+			case 1 -> {
+				System.out.println("Menu de Cadastros:");
+				System.out.println("1 - Cadastrar Hotel");
+				System.out.println("2 - Cadastrar Quarto");
+				System.out.println("3 - Cadastrar Cliente");
+				System.out.println("4 - Cadastrar Reserva");
+				System.out.println("5 - Cadastrar Tipo de Quarto");
 
+				int subOpcaoCadastro = this.insereNumero();
+				switch (subOpcaoCadastro) {
+				case 1 -> this.cadastrarHotel();
+				case 2 -> this.cadastrarQuarto();
+				case 3 -> this.cadastrarCliente();
+				case 4 -> this.cadastrarReserva();
+				case 5 -> this.insereTipoQuarto();
+				default -> System.out.println("Opção inválida. Por favor, tente novamente.");
+				}
+			}
+			case 2 -> {
+				System.out.println("Menu de Listagens:");
+				System.out.println("1 - Listar Hoteis");
+				System.out.println("2 - Listar Quartos");
+				System.out.println("3 - Listar Clientes");
+				System.out.println("4 - Listar Reservas");
+				System.out.println("5 - Listar Tipos de Quarto");
+
+				int subOpcaoListagem = this.insereNumero();
+				switch (subOpcaoListagem) {
+				case 1 -> this.listarHoteis();
+				case 2 -> this.listarQuartos();
+				case 3 -> this.listarClientes();
+				case 4 -> this.listarReservas();
+				case 5 -> this.listarTiposQuarto();
+				default -> System.out.println("Opção inválida. Por favor, tente novamente.");
+				}
+			}
+			case 3 -> {
+				System.out.println("Menu de Atualizações:");
+				System.out.println("1 - Atualizar Hotel");
+				System.out.println("2 - Atualizar Quarto");
+				System.out.println("3 - Atualizar Cliente");
+				System.out.println("4 - Atualizar Reserva");
+				System.out.println("5 - Atualizar Tipo de Quarto");
+
+				int subOpcaoAtualizacao = this.insereNumero();
+				switch (subOpcaoAtualizacao) {
+				case 1 -> this.atualizarHotel();
+				case 2 -> this.atualizarQuarto();
+				case 3 -> this.atualizarCliente();
+				case 4 -> this.atualizarReserva();
+				case 5 -> this.atualizarTipoQuarto();
+				default -> System.out.println("Opção inválida. Por favor, tente novamente.");
+				}
+			}
+			case 4 -> {
+				System.out.println("Menu de Deletar:");
+				System.out.println("1 - Deletar Hotel");
+				System.out.println("2 - Deletar Quarto");
+				System.out.println("3 - Deletar Cliente");
+				System.out.println("4 - Deletar Reserva");
+				System.out.println("5 - Deletar Tipo de Quarto");
+
+				int subOpcaoDelecao = this.insereNumero();
+				switch (subOpcaoDelecao) {
+				case 1 -> this.deletarHotel();
+				case 2 -> this.deletarQuarto();
+				case 3 -> this.deletarCliente();
+				case 4 -> this.deletarReserva();
+				case 5 -> this.deletaTipoQuarto();
+				default -> System.out.println("Opção inválida. Por favor, tente novamente.");
+				}
+			}
+			case 5 -> {
+				System.out.println("Menu de Outras Operações:");
+				System.out.println("1 - Vincular Reserva");
+				System.out.println("2 - Deletar Vínculo de Reserva");
+				System.out.println("3 - Buscar Informações de Hospedagem do Cliente");
+				System.out.println("4 - Buscar Clientes Hospedados em Hotel");
+				System.out.println("5 - Buscar Quartos Ocupados no Período");
+
+				int subOpcaoOutras = this.insereNumero();
+				switch (subOpcaoOutras) {
+				case 1 -> this.vinculaReserva();
+				case 2 -> this.deletarReservaDetalhe();
+				case 3 -> this.buscaInformacoesHospedagemCliente();
+				case 4 -> this.listarClientesNoHotel();
+				case 5 -> this.buscaQuartosOcupadosNoPeriodo();
+				default -> System.out.println("Opção inválida. Por favor, tente novamente.");
+				}
+			}
 			default -> System.out.println("Opção inválida. Por favor, tente novamente.");
 			}
 		}
@@ -479,6 +566,12 @@ public class Menu {
 			}
 		}
 		return string;
+	}
+
+	private void insereTipoQuarto() {
+		TipoQuarto tipoQuarto = this.pedeDadosTipoQuarto();
+		this.tipoQuartoDAOImpl.inserirTipoQuarto(tipoQuarto);
+		System.out.println("Tipo de quarto cadastrado com sucesso!");
 	}
 
 	private Date lerData() {
@@ -623,8 +716,7 @@ public class Menu {
 			}
 
 			Reserva reservaEscolhida = listaDeReservas.stream()
-					.filter(reserva -> reserva.getReservaId().equals(opcaoUsuario))
-					.findFirst().orElse(null);
+					.filter(reserva -> reserva.getReservaId().equals(opcaoUsuario)).findFirst().orElse(null);
 
 			if (reservaEscolhida == null) {
 				System.out.println("Reserva não encontrada.");
@@ -665,6 +757,20 @@ public class Menu {
 			});
 			opcao = opcaoUsuario;
 		}
+	}
+
+	private void listarTiposQuarto() {
+		List<TipoQuarto> listaDeTiposQuarto = this.tipoQuartoDAOImpl.buscarTipoQuarto();
+		if (listaDeTiposQuarto.isEmpty()) {
+			System.out.println("Nenhum tipo de quarto cadastrado.");
+			return;
+		}
+		listaDeTiposQuarto.forEach(tipoQuarto -> {
+			System.out.println(tipoQuarto);
+			System.out.println("\n----------------------\n");
+		});
+
+		this.pedeConfirmacaoVoltarMenu();
 	}
 
 	private ReservaDetalhe pedeClienteEQuartoDaReservaDetalhe(Reserva reserva) {
@@ -849,6 +955,23 @@ public class Menu {
 		reserva.setDataFim(dataFim);
 		reserva.setFormaPagamento(formaPagamento);
 		return reserva;
+	}
+
+	private TipoQuarto pedeDadosTipoQuarto() {
+		System.out.println("Tipo do Tipo de Quarto (Ex.: Suíte): ");
+		String tipo = this.insereString();
+
+		System.out.println("Descrição do Tipo de Quarto: ");
+		String descricao = this.insereString();
+
+		System.out.println("Capacidade do Tipo de Quarto (Ex.: Suíte com banheira, geladeira, etc): ");
+		Integer capacidade = this.insereNumero();
+
+		TipoQuarto tipoQuarto = new TipoQuarto();
+		tipoQuarto.setDescricao(descricao);
+		tipoQuarto.setCapacidade(capacidade);
+		tipoQuarto.setTipo(tipo);
+		return tipoQuarto;
 	}
 
 	@Autowired
