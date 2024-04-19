@@ -51,8 +51,8 @@ public class HotelDAOImpl implements HotelDAO {
 				hotel ON quarto.hotel_id = hotel.hotel_id
 				WHERE
 				quarto.hotel_id = :hotelId AND
-				((sysdate between data_inicio and data_fim) or
-				(sysdate between data_inicio and data_fim))""";
+				((CURRENT_TIMESTAMP between data_inicio and data_fim) or
+				(CURRENT_TIMESTAMP between data_inicio and data_fim))""";
 		List<Object[]> retornoRelatorio = this.entityManager.createNativeQuery(query).setParameter("hotelId", hotelId)
 				.getResultList();
 
@@ -105,7 +105,7 @@ public class HotelDAOImpl implements HotelDAO {
 
 	@Override
 	public List<Hotel> listarHotelComQuartosDisponiveis() {
-		String query = "SELECT h.* FROM hotel h JOIN quarto q ON h.hotel_id = q.hotel_id WHERE q.disponibilidade = true";
+		String query = "SELECT distinct h.* FROM hotel h JOIN quarto q ON h.hotel_id = q.hotel_id WHERE q.disponibilidade = true";
 		return this.entityManager.createNativeQuery(query, Hotel.class).getResultList();
 	}
 }

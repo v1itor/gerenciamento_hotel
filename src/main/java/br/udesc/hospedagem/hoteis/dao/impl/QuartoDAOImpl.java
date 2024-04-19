@@ -64,7 +64,7 @@ public class QuartoDAOImpl implements QuartoDAO {
 				JOIN
 				cliente ON reserva_detalhe.cliente_id = cliente.cliente_id
 				WHERE
-				reserva.data_inicio >= :dataInicial AND reserva.data_fim <= :dataFinal;""";
+				reserva.data_inicio >= :dataInicial AND reserva.data_fim <= :dataFinal""";
 		List<Object[]> retornoRelatorio = this.entityManager.createNativeQuery(query).setParameter("dataInicial", dataInicial).setParameter("dataFinal", dataFinal).getResultList();
 
 		List<Map<String, String>> resultadoRelatorio = new ArrayList<>();
@@ -97,12 +97,9 @@ public class QuartoDAOImpl implements QuartoDAO {
 
 	@Override
 	public List<Quarto> buscarQuartoDisponivelPorHotelId(Integer hotelId, Date dataEntrada, Date dataSaida) {
-		String queryStr = "SELECT * FROM quarto WHERE hotel_id = :hotelId AND disponibilidade = true and "
-				+ "quarto_id NOT IN (SELECT quarto_id FROM reserva WHERE (:dataEntrada between data_inicio and data_fim) or (:dataSaida between data_inicio and data_fim))";
+		String queryStr = "SELECT * FROM quarto WHERE hotel_id = :hotelId AND disponibilidade = true";
 		Query query = this.entityManager.createNativeQuery(queryStr, Quarto.class);
 		query.setParameter("hotelId", hotelId);
-		query.setParameter("dataEntrada", dataEntrada);
-		query.setParameter("dataSaida", dataSaida);
 		List<Quarto> listaResultado = query.getResultList();
 
 		return listaResultado;

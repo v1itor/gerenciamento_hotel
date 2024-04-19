@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,7 +158,12 @@ public class Menu {
 		});
 		System.out.println("Para buscar infomrações de hospedagem do cliente, por favor, insira o id do cliente: ");
 		Integer clienteId = this.insereNumero();
-		this.clienteDAOImpl.buscarInformacoesHospedagemCliente(clienteId).forEach(hospedagem -> {
+		List<Map<String, String>> resultado = this.clienteDAOImpl.buscarInformacoesHospedagemCliente(clienteId);
+		if (resultado.isEmpty()) {
+			System.out.println("Cliente não encontrado ou não possui hospedagens.");
+			return;
+		}
+		resultado.forEach(hospedagem -> {
 			hospedagem.forEach((key, value) -> {
 				System.out.println(key + ": " + value);
 			});
@@ -170,7 +176,12 @@ public class Menu {
 		Date dataInicio = this.lerData();
 		System.out.println("Digite a data de fim (dd/MM/yyyy): ");
 		Date dataFim = this.lerData();
-		this.quartoDAOImpl.buscaOcupacoesDeQuartos(dataInicio, dataFim).forEach(quarto -> {
+		List<Map<String, String>> resultado = this.quartoDAOImpl.buscaOcupacoesDeQuartos(dataInicio, dataFim);
+		if (resultado.isEmpty()) {
+			System.out.println("Nenhum quarto ocupado no período.");
+			return;
+		}
+		resultado.forEach(quarto -> {
 			quarto.forEach((key, value) -> {
 				System.out.println(key + ": " + value);
 			});
@@ -636,7 +647,14 @@ public class Menu {
 
 		System.out.println("Digite o ID do hotel escolhido: ");
 		Integer hotelId = this.insereNumero();
-		this.hotelDAOImpl.buscarHospedesQueEstaoHospedadosEmHotel(hotelId).forEach(cliente -> {
+		List<Map<String, String>> resultado = this.hotelDAOImpl.buscarHospedesQueEstaoHospedadosEmHotel(hotelId);
+
+		if (resultado.isEmpty()) {
+			System.out.println("Nenhum cliente hospedado no hotel.");
+			return;
+		}
+
+		resultado.forEach(cliente -> {
 			cliente.forEach((key, value) -> {
 				System.out.println(key + ": " + value);
 			});

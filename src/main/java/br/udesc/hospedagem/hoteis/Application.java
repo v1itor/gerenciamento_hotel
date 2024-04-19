@@ -18,9 +18,13 @@ public class Application {
 	@Autowired
 	private Menu menu;
 
-
 	@PostConstruct
 	public void runMenu() {
-		this.menu.exibeMenu();
+		try {
+			this.menu.exibeMenu();
+		} catch (Exception e) {
+			System.out.println("Erro: " + e.getMessage());
+			this.menu.exibeMenu();
+		}
 	}
 }
